@@ -43,6 +43,8 @@ There is only a constructor that makes a *object* stream. The constructor can ta
  * <b><code>'hostname'</code></b>: a `string` if you wish to specify a different registry other than the global npm registry.
  * <b><code>'port'</code></b>: an integer if you wish to specify a different registry other than the global npm registry.
 
+*Inspired by [@bcoe](https://github.com/bcoe)'s [npm-tweets](https://github.com/bcoe/npm-tweets/) which runs on [Twitter](https://twitter.com/nodenpm).*
+
 ## Licence
 
 Super Simple Blog Loader for Node.js is Copyright (c) 2013 Rod Vagg [@rvagg](https://twitter.com/rvagg) and licenced under the MIT licence. All rights not explicitly granted in the MIT license are reserved. See the included LICENSE file for more details.
