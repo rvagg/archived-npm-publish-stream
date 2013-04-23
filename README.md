@@ -32,7 +32,7 @@ new NpmPublishStream()
 
 And we get an endless stream of npm published packages:
 
-![Example](http://js.vagg.org/github/npm-publish-stream-example.png)
+![Example](http://js.vagg.org/github/npm-publish-stream-example.png?)
 
 ## API
 

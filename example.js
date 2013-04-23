@@ -8,7 +8,7 @@ function shorten (s) {
   return s.length <= desclength ? s : s.substring(0, desclength) + '...'
 }
 
-new NpmPublishStream({ startTime: new Date(Date.now() - 1000 * 60 * 60 * 1)})
+new NpmPublishStream()
   .on('data', function (data) {
     console.log(
         outf
