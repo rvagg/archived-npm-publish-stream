@@ -1,7 +1,7 @@
 {
     "name"            : "npm-publish-stream"
   , "description"     : "A ReadableStream emitting data for each new module published to npm"
-  , "version"         : "0.0.1"
+  , "version"         : "0.1.0"
   , "homepage"        : "https://github.com/rvagg/node-npm-publish-stream"
   , "authors"         : [
         "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
@@ -13,6 +13,7 @@
       , "url"             : "https://github.com/rvagg/node-npm-publish-stream.git"
     }
   , "dependencies" : {
+        "readable-stream" : "~1.0.2"
     }
   , "devDependencies" : {
         "tap"             : "*"
