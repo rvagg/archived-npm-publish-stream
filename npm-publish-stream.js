@@ -45,7 +45,7 @@ function fetch (options, callback) {
 function NpmPublishStream (options) {
   ReadableStream.call(this, { objectMode: true })
   this._options = extend({
-      refreshRate : 10000
+      refreshRate : 1000 * 30
     , startTime   : new Date()
   }, options || {})
   this._lastRefreshTime = this._options.startTime

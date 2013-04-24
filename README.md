@@ -39,7 +39,7 @@ And we get an endless stream of npm published packages:
 There is only a constructor that makes a *object* stream. The constructor can take an options object though, the following properties are accepted::
 
  * <b><code>'startTime'</code></b>: a `Date` object specifying when you would like the stream to start from, this would normally be at some point in the past although not too far back unless you want to be flooded with data.
- * <b><code>'refreshRate'</code></b>: an integer specifying the length in milliseconds between each refresh from the npm registry. This is the polling-frequency and you can increase or decrease it from the default `10000` (10s).
+ * <b><code>'refreshRate'</code></b>: an integer specifying the length in milliseconds between each refresh from the npm registry. This is the polling-frequency and you can increase or decrease it from the default `30000` (30s).
  * <b><code>'hostname'</code></b>: a `string` if you wish to specify a different registry other than the global npm registry.
  * <b><code>'port'</code></b>: an integer if you wish to specify a different registry other than the global npm registry.
 
