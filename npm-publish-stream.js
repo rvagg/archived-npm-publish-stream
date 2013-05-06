@@ -49,7 +49,7 @@ function NpmPublishStream (options) {
     , startTime   : new Date()
   }, options || {})
   this._lastRefreshTime = this._options.startTime
-  this._lastRefreshBatch = []
+  this._lastRefreshBatch = {}
 }
 
 inherits(NpmPublishStream, ReadableStream)
@@ -69,22 +69,37 @@ NpmPublishStream.prototype._refreshFromRepository = function() {
     return
 
   this._refreshing = true
-  var opt = extend(extend({}, this._options), { startTime: this._lastRefreshTime })
+
+  var opt = extend(extend({}, this._options), {
+    startTime: this._lastRefreshTime
+  })
+
   fetch(opt, function (err, data) {
     if (err) return this.emit('error', err)
-    var batch = []
-      , id
+
+    var id
+      , cutoffts
 
     data.rows.forEach(function (row) {
-      batch.push(id = (row.id + '|' + row.key))
+      id = (row.id + '|' + row.key)
       row.key = new Date(row.key)
-      if (this._lastRefreshBatch.indexOf(id) == -1) {
+      if (!this._lastRefreshBatch[id]) {
         this.push(row)
+        this._lastRefreshBatch[id] = row.key
       } // else we've seen this before
     }.bind(this))
-    this._lastRefreshBatch = batch
-    if (data.rows.length)
+
+    if (data.rows.length) {
       this._lastRefreshTime = data.rows[data.rows.length - 1].key
+
+      cutoffts = this._lastRefreshTime.getTime() - 1000 // just to be sure
+
+      Object.keys(this._lastRefreshBatch).forEach(function (id) {
+        if (this._lastRefreshBatch[id].getTime() < cutoffts)
+          delete this._lastRefreshBatch[id]
+      }.bind(this))
+    }
+
     this._refreshing = false
   }.bind(this))
 }
