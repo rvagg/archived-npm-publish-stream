@@ -9,15 +9,16 @@ function fetch (options, callback) {
         , path     : '/registry/_design/app/_view/updated?include_docs=true&startkey='
             + JSON.stringify(options.startTime)
         , port     : options.port || 80
+        , method   : 'GET'
       }
 
-  http.get(
+  var req = http.request(
       opt
     , function(res) {
         var content = ''
 
         if (res.statusCode != 200) {
-          callback(new Error('Got status code ' + res.statusCode))
+          callback && callback(new Error('Got status code ' + res.statusCode))
           return callback = null
         }
 
@@ -28,18 +29,28 @@ function fetch (options, callback) {
             content += chunk
           })
           .on('error', function (err) {
-            callback(err)
+            callback && callback(err)
             callback = null
           })
           .on('end', function () {
-            try {
-              callback && callback(null, JSON.parse(content))
-            } catch (ex) {
-              callback(new Error('error parsing response data', ex))
+            if (callback) {
+              try {
+                content = JSON.parse(content)
+              } catch (ex) {
+                return callback(new Error('error parsing response data', ex))
+              }
+              callback(null, content)
             }
           })
       }
   )
+ 
+  req.on('error', function (err) {
+    callback && callback(err)
+    callback = null
+  })
+
+  req.end()
 }
 
 function NpmPublishStream (options) {
