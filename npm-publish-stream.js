@@ -54,6 +54,9 @@ function fetch (options, callback) {
 }
 
 function NpmPublishStream (options) {
+  if (!(this instanceof NpmPublishStream))
+    return new NpmPublishStream(options)
+
   ReadableStream.call(this, { objectMode: true })
   this._options = extend({
       refreshRate : 1000 * 30

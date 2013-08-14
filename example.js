@@ -8,7 +8,10 @@ function shorten (s) {
   return s.length <= desclength ? s : s.substring(0, desclength) + '...'
 }
 
-new NpmPublishStream()
+new NpmPublishStream({
+      hostname: 'npm.nodejs.org.au'
+    , port: 5984
+  })
   .on('data', function (data) {
     console.log(
         outf
