@@ -1,7 +1,7 @@
 {
     "name"            : "npm-publish-stream"
   , "description"     : "A ReadableStream emitting data for each new module published to npm"
-  , "version"         : "0.2.1"
+  , "version"         : "0.2.2"
   , "homepage"        : "https://github.com/rvagg/node-npm-publish-stream"
   , "authors"         : [
         "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"

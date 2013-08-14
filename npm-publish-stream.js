@@ -1,5 +1,5 @@
 const http           = require('http')
-    , ReadableStream = require('readable-stream').Readable
+    , ReadableStream = require('stream').Readable || require('readable-stream/readable')
     , extend         = require('util')._extend
     , inherits       = require('util').inherits
 
