@@ -5,6 +5,12 @@ const test = require('tap').test
 
     , PORT = 2345
 
+function delayedEnd (t) {
+  return function () {
+    setTimeout(t.end.bind(t), 100)
+  }
+}
+
 function registryFaker (responses) {
   var ee = new EE()
     , i  = 0
@@ -33,9 +39,9 @@ test('simple single scan', function (t) {
 
     , ee = registryFaker([ { rows: expected } ])
 
-  ee.on('end', t.end.bind(t))
+  ee.on('end', delayedEnd(t))
   ee.on('connect', function (url) {
-    var time = JSON.stringify(new Date()).replace(/\d{2}\.\d{3}/, '\\d{2}\.\\d{3}')
+    var time = JSON.stringify(new Date()).replace(/\d{2}\.\d{3}/, '\\d{2}.\\d{3}').replace(/"/g, '%22')
     t.like(url, new RegExp('/registry/_design/app/_view/updated\\?include_docs=true\\&startkey=' + time))
   })
   ee.once('ready', function () {
@@ -46,7 +52,9 @@ test('simple single scan', function (t) {
     nps.on('data', function (actual) {
       t.deepEquals(expected[i++], actual, 'data point ' + (i-1) + ' is correct')
     })
-    ee.on('end', nps.destroy.bind(nps))
+    ee.on('end', function () {
+      setTimeout(nps.destroy.bind(nps), 50)
+    })
   })
 })
 
@@ -60,9 +68,9 @@ test('simple double scan, same data', function (t) {
 
     , ee = registryFaker([ { rows: expected }, { rows: expected } ])
 
-  ee.on('end', t.end.bind(t))
+  ee.on('end', delayedEnd(t))
   ee.on('connect', function (url) {
-    var time = JSON.stringify(new Date()).replace(/\d{2}\.\d{3}/, '\\d{2}\.\\d{3}')
+    var time = JSON.stringify(new Date()).replace(/\d{2}\.\d{3}/, '\\d{2}.\\d{3}').replace(/"/g, '%22')
     t.like(url, new RegExp('/registry/_design/app/_view/updated\\?include_docs=true\\&startkey=' + time))
   })
   ee.once('ready', function () {
@@ -73,7 +81,9 @@ test('simple double scan, same data', function (t) {
     nps.on('data', function (actual) {
       t.deepEquals(expected[i++], actual, 'data point ' + (i-1) + ' is correct')
     })
-    ee.on('end', nps.destroy.bind(nps))
+    ee.on('end', function () {
+      setTimeout(nps.destroy.bind(nps), 50)
+    })
   })
 })
 
@@ -93,9 +103,9 @@ test('simple multi scan, overlapping & new data', function (t) {
     , i  = 0
     , c  = 0
 
-  ee.on('end', t.end.bind(t))
+  ee.on('end', delayedEnd(t))
   ee.on('connect', function (url) {
-    var time = JSON.stringify(c === 0 ? expected[0][0].key : expected[c - 1][1].key)
+    var time = JSON.stringify(c === 0 ? expected[0][0].key : expected[c - 1][1].key).replace(/"/g, '%22')
     t.equal(url, '/registry/_design/app/_view/updated?include_docs=true&startkey=' + time)
     c++
   })
@@ -111,6 +121,66 @@ test('simple multi scan, overlapping & new data', function (t) {
     nps.on('data', function (actual) {
       t.deepEquals(uniques[i++], actual, 'data point ' + (i - 1) + ' is correct')
     })
-    ee.on('end', nps.destroy.bind(nps))
+    ee.on('end', function () {
+      setTimeout(nps.destroy.bind(nps), 50)
+    })
   })
+})
+
+test('simple server down & restart', function (t) {
+  t.plan(5)
+
+  var expected1 = [
+          { id: 'foo1js', key: new Date(Date.now() - 4000) }
+        , { id: 'bar1js', key: new Date(Date.now() - 3000) }
+      ]
+    , expected2 = [
+          { id: 'foo2js', key: new Date(Date.now() - 2000) }
+        , { id: 'bar2js', key: new Date(Date.now() - 1000) }
+      ]
+    , ee = registryFaker([ { rows: expected1 } ])
+    , nps
+
+  function connect (url) {
+    var time = JSON.stringify(new Date()).replace(/\d{2}\.\d{3}/, '\\d{2}.\\d{3}').replace(/"/g, '%22')
+    t.like(url, new RegExp('/registry/_design/app/_view/updated\\?include_docs=true\\&startkey=' + time))
+  }
+
+  function ready () {
+    nps = new NpmPublishStream({
+            hostname : 'localhost'
+          , port     : PORT
+          , refreshRate: 100
+        })
+      , i   = 0
+
+    //nps.on('end', t.fail.bind(t))
+    nps.on('error', function (err) {
+      t.ok(err, 'got an error')
+    })
+    nps.on('data', function (actual) {
+      if (i < expected1.length) {
+        t.deepEquals(expected1[i++], actual, 'data point ' + (i - 1) + ' is correct')
+      } else {
+        t.deepEquals(
+            expected2[i++ - expected1.length]
+          , actual
+          , 'data point ' + (i - 1 - expected1.length) + ' is correct'
+        )
+      }
+    })
+  }
+
+  ee.on('end', function () {
+    setTimeout(function () {
+      ee = registryFaker([ { rows: expected1 } ])
+      ee.on('connect', connect)
+      ee.on('end', function () {
+        setTimeout(nps.destroy.bind(nps), 50)
+        setTimeout(t.end.bind(t), 100)
+      })
+    }, 150)
+  })
+  ee.on('connect', connect)
+  ee.once('ready', ready)
 })

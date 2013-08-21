@@ -1,56 +1,26 @@
 const http           = require('http')
-    , ReadableStream = require('stream').Readable || require('readable-stream/readable')
+    , hyperquest     = require('hyperquest')
+    , bl             = require('bl')
+    , ReadableStream = /*require('stream').Readable ||*/ require('readable-stream/readable')
     , extend         = require('util')._extend
     , inherits       = require('util').inherits
 
 function fetch (options, callback) {
-  var opt = {
-          hostname : options.hostname || 'isaacs.iriscouch.com'
-        , path     : '/registry/_design/app/_view/updated?include_docs=true&startkey='
-            + JSON.stringify(options.startTime)
-        , port     : options.port || 80
-        , method   : 'GET'
-      }
+  var url = 'http://'
+      + (options.hostname || 'isaacs.iriscouch.com')
+      + ':' + (options.port || 80)
+      + '/registry/_design/app/_view/updated?include_docs=true&startkey='
+          + JSON.stringify(options.startTime)
 
-  var req = http.request(
-      opt
-    , function(res) {
-        var content = ''
-
-        if (res.statusCode != 200) {
-          callback && callback(new Error('Got status code ' + res.statusCode))
-          return callback = null
-        }
-
-        res.setEncoding('utf8')
-
-        res
-          .on('data', function (chunk) {
-            content += chunk
-          })
-          .on('error', function (err) {
-            callback && callback(err)
-            callback = null
-          })
-          .on('end', function () {
-            if (callback) {
-              try {
-                content = JSON.parse(content)
-              } catch (ex) {
-                return callback(new Error('error parsing response data', ex))
-              }
-              callback(null, content)
-            }
-          })
-      }
-  )
- 
-  req.on('error', function (err) {
-    callback && callback(err)
-    callback = null
-  })
-
-  req.end()
+  hyperquest(url).pipe(bl(function (err, data) {
+    if (err)
+      return callback(err)
+    try {
+      callback(null, JSON.parse(data.toString()))
+    } catch (ex) {
+      callback(new Error('error parsing response data', ex))
+    }
+  }))
 }
 
 function NpmPublishStream (options) {
@@ -89,7 +59,10 @@ NpmPublishStream.prototype._refreshFromRepository = function() {
   })
 
   fetch(opt, function (err, data) {
-    if (err) return this.emit('error', err)
+    if (err) {
+      this._refreshing = false
+      return this.emit('error', err)
+    }
 
     var id
       , cutoffts
@@ -121,7 +94,7 @@ NpmPublishStream.prototype._refreshFromRepository = function() {
 NpmPublishStream.prototype.destroy = function() {
   clearInterval(this._refreshInterval)
   this._refreshInterval = -1
-  this.emit('end')
+  process.nextTick(this.push.bind(this, null))
 }
 
 module.exports = NpmPublishStream

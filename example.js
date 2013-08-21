@@ -11,6 +11,7 @@ function shorten (s) {
 new NpmPublishStream({
       hostname: 'npm.nodejs.org.au'
     , port: 5984
+    , startTime: new Date(Date.now() - 60 * 1000 * 10)
   })
   .on('data', function (data) {
     console.log(
@@ -21,4 +22,4 @@ new NpmPublishStream({
       , shorten(data.doc.description || '')
     )
   })
-  .on('error', console.log)
+  .on('error', console.error)
