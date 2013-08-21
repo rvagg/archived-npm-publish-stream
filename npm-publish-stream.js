@@ -1,7 +1,7 @@
 const http           = require('http')
     , hyperquest     = require('hyperquest')
     , bl             = require('bl')
-    , ReadableStream = /*require('stream').Readable ||*/ require('readable-stream/readable')
+    , ReadableStream = require('stream').Readable || require('readable-stream/readable')
     , extend         = require('util')._extend
     , inherits       = require('util').inherits
 
