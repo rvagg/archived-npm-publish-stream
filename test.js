@@ -45,7 +45,7 @@ test('simple single scan', function (t) {
     t.like(url, new RegExp('/registry/_design/app/_view/updated\\?include_docs=true\\&startkey=' + time))
   })
   ee.once('ready', function () {
-    var nps = new NpmPublishStream({ hostname: 'localhost', port: PORT })
+    var nps = new NpmPublishStream({ hostname: 'localhost', port: PORT, protocol: 'http://' })
       , i   = 0
 
     nps.on('error', t.fail.bind(t))
@@ -74,7 +74,7 @@ test('simple double scan, same data', function (t) {
     t.like(url, new RegExp('/registry/_design/app/_view/updated\\?include_docs=true\\&startkey=' + time))
   })
   ee.once('ready', function () {
-    var nps = new NpmPublishStream({ hostname: 'localhost', port: PORT, refreshRate: 100 })
+    var nps = new NpmPublishStream({ hostname: 'localhost', port: PORT, refreshRate: 100, protocol: 'http://' })
       , i   = 0
 
     nps.on('error', t.fail.bind(t))
@@ -114,6 +114,7 @@ test('simple multi scan, overlapping & new data', function (t) {
             hostname    : 'localhost'
           , port        : PORT
           , refreshRate : 100
+          , protocol    : 'http://'
           , startTime   : expected[0][0].key
         })
 
@@ -150,6 +151,7 @@ test('simple server down & restart', function (t) {
     nps = new NpmPublishStream({
             hostname : 'localhost'
           , port     : PORT
+          , protocol : 'http://'
           , refreshRate: 100
         })
       , i   = 0
