@@ -1,6 +1,11 @@
-# NpmPublishStream [![Build Status](https://secure.travis-ci.org/rvagg/node-npm-publish-stream.png)](http://travis-ci.org/rvagg/node-npm-publish-stream)
+# NpmPublishStream [![Build Status](https://secure.travis-ci.org/rvagg/npm-publish-stream.png)](http://travis-ci.org/rvagg/npm-publish-stream)
 
-A Node.js [ReadableStream](http://nodejs.org/docs/latest/api/stream.html#stream_class_stream_readable) that emits data for each module published to npm, in near-realtime.
+[![Build Status](https://secure.travis-ci.org/rvagg/npm-publish-stream.png)](http://travis-ci.org/rvagg/npm-publish-stream)
+
+**A Node.js [ReadableStream](http://nodejs.org/docs/latest/api/stream.html#stream_class_stream_readable) that emits data for each module published to npm, in near-realtime.**
+
+[![NPM](https://nodei.co/npm/npm-publish-stream.svg)](https://nodei.co/npm/npm-publish-stream/)
+
 
 **NpmPublishStream** uses simple polling against the npm registry server to fetch data about publish events
 
