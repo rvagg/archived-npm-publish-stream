@@ -6,7 +6,7 @@ const http           = require('http')
     , inherits       = require('util').inherits
 
 function fetch (options, callback) {
-  var url = 'http://'
+  var url = (options.protocol || 'http://')
       + (options.hostname || 'isaacs.iriscouch.com')
       + ':' + (options.port || 80)
       + '/registry/_design/app/_view/updated?include_docs=true&startkey='
