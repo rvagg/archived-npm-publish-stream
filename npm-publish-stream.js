@@ -6,9 +6,9 @@ const http           = require('http')
     , inherits       = require('util').inherits
 
 function fetch (options, callback) {
-  var url = (options.protocol || 'http://')
-      + (options.hostname || 'isaacs.iriscouch.com')
-      + ':' + (options.port || 80)
+  var url = (options.protocol || 'https://')
+      + (options.hostname || 'skimdb.npmjs.com')
+      + ':' + (options.port || 443)
       + '/registry/_design/app/_view/updated?include_docs=true&startkey='
           + JSON.stringify(options.startTime)
 
