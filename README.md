@@ -1,4 +1,4 @@
-# NpmPublishStream [![Build Status](https://secure.travis-ci.org/rvagg/npm-publish-stream.png)](http://travis-ci.org/rvagg/npm-publish-stream)
+# NpmPublishStream
 
 [![Build Status](https://secure.travis-ci.org/rvagg/npm-publish-stream.png)](http://travis-ci.org/rvagg/npm-publish-stream)
 
