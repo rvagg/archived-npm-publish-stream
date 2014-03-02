@@ -1,27 +1,31 @@
 {
-    "name"            : "npm-publish-stream"
-  , "description"     : "A ReadableStream emitting data for each new module published to npm"
-  , "version"         : "0.3.1"
-  , "homepage"        : "https://github.com/rvagg/node-npm-publish-stream"
-  , "authors"         : [
-        "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
-    ]
-  , "keywords"        : [ "npm", "stream" ]
-  , "main"            : "./npm-publish-stream.js"
-  , "repository"      : {
-        "type"            : "git"
-      , "url"             : "https://github.com/rvagg/node-npm-publish-stream.git"
-    }
-  , "dependencies" : {
-        "readable-stream" : "~1.0.2"
-      , "hyperquest"      : "~0.1.7"
-      , "bl"              : "~0.4.1"
-    }
-  , "devDependencies" : {
-        "tap"             : "*"
-    }
-  , "scripts": {
-        "test"            : "node ./test.js"
-    }
-  , "license"             : "MIT"
+  "name": "npm-publish-stream",
+  "description": "A ReadableStream emitting data for each new module published to npm",
+  "version": "0.3.1",
+  "homepage": "https://github.com/rvagg/node-npm-publish-stream",
+  "authors": [
+    "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
+  ],
+  "keywords": [
+    "npm",
+    "stream"
+  ],
+  "main": "./npm-publish-stream.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/node-npm-publish-stream.git"
+  },
+  "dependencies": {
+    "readable-stream": "^1.0.26",
+    "hyperquest": "^0.2.0",
+    "bl": "^0.7.0",
+    "stream-browserify": "^0.1.3"
+  },
+  "devDependencies": {
+    "tap": "*"
+  },
+  "scripts": {
+    "test": "node ./test.js"
+  },
+  "license": "MIT"
 }

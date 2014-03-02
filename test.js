@@ -7,7 +7,7 @@ const test = require('tap').test
 
 function delayedEnd (t) {
   return function () {
-    setTimeout(t.end.bind(t), 100)
+    setTimeout(t.end.bind(t), 200)
   }
 }
 
