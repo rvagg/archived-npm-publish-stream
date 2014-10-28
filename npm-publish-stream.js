@@ -1,9 +1,10 @@
 const http           = require('http')
     , hyperquest     = require('hyperquest')
     , bl             = require('bl')
-    , ReadableStream = require('stream').Readable || require('readable-stream/readable')
+    , ReadableStream = require('readable-stream/readable')
     , extend         = require('util')._extend
     , inherits       = require('util').inherits
+
 
 function fetch (options, callback) {
   var url = (options.protocol || 'https://')
@@ -15,11 +16,16 @@ function fetch (options, callback) {
   hyperquest(url).pipe(bl(function (err, data) {
     if (err)
       return callback(err)
+
+    var parsed
+
     try {
-      callback(null, JSON.parse(data.toString()))
+      parsed = JSON.parse(data.toString())
     } catch (ex) {
-      callback(new Error('error parsing response data', ex))
+      return callback(new Error('error parsing response data', ex))
     }
+
+    callback(null, parsed)
   }))
 }
 
