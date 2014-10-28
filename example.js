@@ -8,11 +8,7 @@ function shorten (s) {
   return s.length <= desclength ? s : s.substring(0, desclength) + '...'
 }
 
-new NpmPublishStream({
-      hostname: 'npm.nodejs.org.au'
-    , port: 5984
-    , startTime: new Date(Date.now() - 60 * 1000 * 10)
-  })
+new NpmPublishStream({ startTime: new Date(Date.now() - 60 * 1000 * 10) })
   .on('data', function (data) {
     console.log(
         outf
