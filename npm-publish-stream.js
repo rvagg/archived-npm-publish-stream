@@ -25,6 +25,10 @@ function fetch (options, callback) {
       return callback(new Error('error parsing response data', ex))
     }
 
+    if (parsed.error) {
+      return callback(new Error([parsed.error, ': ', parsed.message].join('')));
+    }
+
     callback(null, parsed)
   }))
 }
@@ -66,6 +70,13 @@ NpmPublishStream.prototype._refreshFromRepository = function() {
 
   fetch(opt, function (err, data) {
     if (err) {
+      if (err.message && err.message.split(':')[0] === 'pound_service_unavailable') {
+        // sometimes, we get this `The service is not available. Please try again later.`
+        // error. We simply ignore it and come back later, as it says.
+
+        return;
+      }
+
       this._refreshing = false
       return this.emit('error', err)
     }
